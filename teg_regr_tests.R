@@ -68,7 +68,7 @@ teg_regr_tests <- function(X, y, H, verbose0 = 1, names0 = c()) {
   # If linear constraint consists of exclusions:
   H_Constraint_vals <- unique(as.vector(H$Constraints))
   H_constants_vals <- unique(H$constants)
-  if (all(H_Constraint_vals %in% c(0, 1)) && all(H_constants_vals == 0)) {
+  if (all(rowSums(H$Constraints) == 1) && all(H_Constraint_vals %in% c(0, 1)) && all(H_constants_vals == 0)) {
     X_reduced = X[, -which(colSums(H$Constraints) == 1)]
     fit_reduced <- lm(y ~ X_reduced - 1)
     Output$fit_reduced <- fit_reduced
