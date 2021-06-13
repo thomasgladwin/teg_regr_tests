@@ -5,7 +5,7 @@ The function (a practice project after reading Bingham & Fry, but a handy helper
 
 The function requires predictor and outcome matrices X and y (an intercept column must be added to X explicitly if required), plus a Hypothesis: a list of a Constraints matrix and a constants vector that defines the constraints to test. Constraints can, e.g., test the effect of removing a predictor or equalizing two predictors etc. The function runs the F-test for the hypothesis (significance meaning the hypothesis is rejected). If the constraints are equivalent to testing a nested model, the AIC is provided for the full model and constrained model.
 
-(This is a slightly more flexible demand than might be immediately apparant, but might require some reformulation of predictors; e.g., instead of making a constraint that equates a subset of predictors, the test could be made nested by using indicator predictors for deviations from an overall predictor within that subset.)
+(This is a slightly more flexible demand than might be immediately apparant, but might require some reformulation of predictors; e.g., instead of making a constraint that equates a subset of predictors, the test could be made nested by using predictors for deviations from an overall predictor within that subset.)
 
 Data from a data.frame will need to be converted to matrices, e.g., via data.matrix().
 
