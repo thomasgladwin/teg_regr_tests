@@ -10,8 +10,11 @@ Data from a data.frame will need to be converted to matrices, e.g., via data.mat
 The script includes example code for various constraints. E.g.,
 
 H$Constraints = matrix(c(1, 0, 0, 0), nrow=1)
+
 H$Constraints = rbind(H$Constraints, matrix(c(0, 0, 0, 1), nrow=1))
+
 H$constants = matrix(c(0, 0), ncol=1)
+
 O <- teg_regr_tests(X, y, H)
 
 tests against the hypothesis that predictors X1 and X4 have a weight of 0; or, equivalently, it tests whether adding the set of predictors X1 and X4 to a model without them results in a significant increase in explained variance. The function (unless told to suppress output) will provide the usual regression output from lm(), with the final two lines providing the AIC comparison (for nested models only) and F-test for the hypothesis:
