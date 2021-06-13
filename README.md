@@ -19,7 +19,7 @@ H$constants = matrix(c(0, 0), ncol=1)
 
 O <- teg_regr_tests(X, y, H)
 
-tests against the hypothesis that predictors X1 and X4 have a weight of 0; or, equivalently, it tells you whether adding the set of predictors X1 and X4 to the model without them results in a significant increase in explained variance. The function (unless told to suppress output) will provide the usual regression output from lm(), with the final two lines providing the AIC comparison (for nested models only) and F-test for the hypothesis:
+tests against the hypothesis that predictors X1 and X4 have a weight of 0; or, equivalently, it tells you whether adding the set of predictors {X1 and X4} to the model without them results in a significant increase in explained variance. The function (unless told to suppress output) will provide the usual regression output from lm(), with the final two lines providing the AIC comparison (for nested models only) and F-test for the hypothesis:
 
 Reduced model AIC =  433 , versus full-fit AIC =  424 
 
