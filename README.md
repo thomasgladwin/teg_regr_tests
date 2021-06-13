@@ -9,6 +9,8 @@ Data from a data.frame will need to be converted to matrices, e.g., via data.mat
 
 The script includes example code for various constraints. E.g.,
 
+H <- c()
+
 H$Constraints = matrix(c(1, 0, 0, 0), nrow=1)
 
 H$Constraints = rbind(H$Constraints, matrix(c(0, 0, 0, 1), nrow=1))
