@@ -135,14 +135,17 @@ O <- teg_regr_tests(X, y, c(), 1, names0)
 
 ## Examples where one or more weights are set to 0, removing the predictor(s).
 # Example: set X3 to 0
+H <- c()
 H$Constraints = matrix(c(0, 0, 1, 0), nrow=1)
 H$constants = matrix(c(0), ncol=1)
 O <- teg_regr_tests(X, y, H, 1, names0)
 # Example: set X2 to 0
+H <- c()
 H$Constraints = matrix(c(0, 1, 0, 0), nrow=1)
 H$constants = matrix(c(0), ncol=1)
 O <- teg_regr_tests(X, y, H, 1, names0)
 # Example: Set X1 and X4 to 0
+H <- c()
 H$Constraints = matrix(c(1, 0, 0, 0), nrow=1)
 H$Constraints = rbind(H$Constraints, matrix(c(0, 0, 0, 1), nrow=1))
 H$constants = matrix(c(0, 0), ncol=1)
@@ -150,15 +153,18 @@ O <- teg_regr_tests(X, y, H, 1, names0)
 
 ## Examples of equating coefficients
 # Example: set X1 == X4
+H <- c()
 H$Constraints = matrix(c(1, 0, 0, -1), nrow=1)
 H$constants = matrix(c(0), ncol=1)
 O <- teg_regr_tests(X, y, H, 1, names0)
 # Example: set X3 == X4
+H <- c()
 H$Constraints = matrix(c(0, 0, -1, 1), nrow=1)
 H$constants = matrix(c(0), ncol=1)
 O <- teg_regr_tests(X, y, H, 1, names0)
 
 # Example of multi-constraints: set X1 == X2 and X3 to 5
+H <- c()
 H$Constraints = matrix(c(1, -1, 0, 0), nrow=1)
 H$Constraints = rbind(H$Constraints, matrix(c(0, 0, 1, 0), nrow=1))
 H$constants = matrix(c(0, 5), ncol=1)
