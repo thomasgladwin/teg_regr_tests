@@ -25,4 +25,4 @@ Reduced model AIC =  433 , versus full-fit AIC =  424
 
 F-test of linear constraint: F(2, 75) = 6.47, p = 0.00255
 
-So, in this case, the reduced model is worse than the full model in terms of AIC and the F-test agrees, as removing the predictor results in a significant increase in unexplained variance.
+So, in this case, the reduced model is worse than the full model in terms of AIC and the F-test agrees, as removing the predictors results in a significant increase in unexplained variance.
