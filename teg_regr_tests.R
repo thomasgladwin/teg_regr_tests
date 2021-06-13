@@ -1,5 +1,5 @@
 teg_regr_tests <- function(X, y, H, verbose0 = 1, names0 = c()) {
-  # Function to run a regression and test linear hypotheses.
+  # Function to test linear hypotheses on regression coefficients.
   # Method from Bingham & Fry.
   #
   # X and y must be matrices in the correct orientation.
@@ -27,7 +27,7 @@ teg_regr_tests <- function(X, y, H, verbose0 = 1, names0 = c()) {
   if (verbose0 == 1) {
     if (!is.null(names0)) {
       for (n in 1:nPred) {
-        cat(c('X', n, ' = ', names0[n], '\n'))
+        cat(c('X', n, ' = ', names0[n], '\n'), sep="")
       }
     }
     print(H)
@@ -87,7 +87,7 @@ teg_regr_tests <- function(X, y, H, verbose0 = 1, names0 = c()) {
 
       print(summary(fit_reduced))
       print(summary.aov(fit_reduced))
-      cat("Reduced model AIC = ", signif(AIC(fit_reduced), digits=nDigits), ", versus full-fit AIC = ", signif(AIC(fit_full), digits=nDigits), "\n\n")
+      cat("\nReduced model AIC = ", signif(AIC(fit_reduced), digits=nDigits), ", versus full-fit AIC = ", signif(AIC(fit_full), digits=nDigits), "\n\n")
     }    
   }
   
@@ -96,8 +96,9 @@ teg_regr_tests <- function(X, y, H, verbose0 = 1, names0 = c()) {
       for (n in 1:nPred) {
         cat(c('b_constrained', n, ' = ', signif(beta_constr[n], digits = nDigits), '\n'))
       }
+      cat(paste("\n"))
     }
-    cat(paste('\nF-test of linear constraint: F', '(', nConstr, ', ', (N - nPred), ') = ', signif(F, digits = nDigits), ', p = ', signif(p, digits = nDigits), sep=""))
+    cat(paste('F-test of linear constraint: F', '(', nConstr, ', ', (N - nPred), ') = ', signif(F, digits = nDigits), ', p = ', signif(p, digits = nDigits), sep=""))
   }
 
   Output$beta_constrained <- beta_constr
@@ -111,18 +112,18 @@ teg_regr_tests <- function(X, y, H, verbose0 = 1, names0 = c()) {
 # Example code
 
 # Create test data
-N <- 280
+N <- 80
 nPred <- 4 # Intercept must be added to these as an explicit column in X
-names0 <- paste(rep('v', nPred - 1), 1:(nPred - 1), sep="")
+names0 <- paste(rep('v', nPred), 1:nPred, sep="")
 names0 <- c(names0, 'Intercept')
 X <- matrix(rnorm(N * nPred), ncol = nPred)
 X <- cbind(X, rep(1,N)) # Add intercept explicitly
 print(dim(X))
-beta_true = matrix(c(3 * (1:nPred), 100), ncol=1) # True coefficients increase by three, and set Intercept to 100
+beta_true = 0.1 * matrix(c(3 * (1:nPred), 100), ncol=1) # True coefficients increase by three, and set Intercept to 100
 beta_true[2] = 0 # Set Beta_2 to zero for testing
 beta_true[3] = beta_true[4] # Set Beta_3 == Beta_4 for testing
 print(beta_true)
-e <- 0.1 * rnorm(N)
+e <- 1.5 * rnorm(N)
 y <- X %*% beta_true + e
 
 # Run basic regression, where H = c()
@@ -133,15 +134,15 @@ O <- teg_regr_tests(X, y, c(), 1, names0)
 # e.g., that Beta_1 == 0 or Beta_3 == Beta_4.
 
 ## Examples where one or more weights are set to 0, removing the predictor(s).
-# Example: set X1 to 0
-H$Constraints = matrix(c(1, 0, 0, 0), nrow=1)
+# Example: set X3 to 0
+H$Constraints = matrix(c(0, 0, 1, 0), nrow=1)
 H$constants = matrix(c(0), ncol=1)
 O <- teg_regr_tests(X, y, H, 1, names0)
 # Example: set X2 to 0
 H$Constraints = matrix(c(0, 1, 0, 0), nrow=1)
 H$constants = matrix(c(0), ncol=1)
 O <- teg_regr_tests(X, y, H, 1, names0)
-# Example: Set X2 and X4 to 0
+# Example: Set X1 and X4 to 0
 H$Constraints = matrix(c(1, 0, 0, 0), nrow=1)
 H$Constraints = rbind(H$Constraints, matrix(c(0, 0, 0, 1), nrow=1))
 H$constants = matrix(c(0, 0), ncol=1)
