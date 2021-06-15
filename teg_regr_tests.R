@@ -74,7 +74,6 @@ teg_regr_tests <- function(X, y, H, verbose0 = 1, names0 = c()) {
     Output$fit_reduced <- fit_reduced
     if (verbose0 == 1) {
       cat("# # # Reduced model:\n")
-      
       if (!is.null(names0)) {
         retained <- 1:nPred
         retained <- retained[which(colSums(H$Constraints) == 0)]
@@ -84,7 +83,32 @@ teg_regr_tests <- function(X, y, H, verbose0 = 1, names0 = c()) {
           m = m + 1
         }
       }
+      print(summary(fit_reduced))
+      print(summary.aov(fit_reduced))
+      cat("\nReduced model AIC = ", signif(AIC(fit_reduced), digits=nDigits), ", versus full-fit AIC = ", signif(AIC(fit_full), digits=nDigits), "\n\n")
+    }    
+  }
 
+  # If linear constraints are a linked sequence of equalities
+  H_Constraint_vals <- unique(as.vector(H$Constraints))
+  H_constants_vals <- unique(H$constants)
+  if (all(rowSums(H$Constraints != 0) == 2) && all(rowSums(abs(H$Constraints)) == 2) && all(rowSums(H$Constraints) == 0) && all(H_Constraint_vals %in% c(-1, 0, 1)) && all(H_constants_vals == 0)) {
+    X_reduced = X[, -which(colSums(abs(H$Constraints)) > 0)]
+    combined_equalized = as.matrix(rowMeans(X[, which(colSums(abs(H$Constraints)) > 0)]), ncol=1)
+    X_reduced = cbind(X_reduced[,-dim(X_reduced)[2]], combined_equalized, X_reduced[,dim(X_reduced)[2]])
+    fit_reduced <- lm(y ~ X_reduced - 1)
+    Output$fit_reduced <- fit_reduced
+    if (verbose0 == 1) {
+      cat("# # # Reduced model:\n")
+      if (!is.null(names0)) {
+        retained <- 1:nPred
+        retained <- retained[which(colSums(H$Constraints) == 0)]
+        m = 1
+        for (n in retained) {
+          cat(c('X', m, ' = ', names0[n], '\n'))
+          m = m + 1
+        }
+      }
       print(summary(fit_reduced))
       print(summary.aov(fit_reduced))
       cat("\nReduced model AIC = ", signif(AIC(fit_reduced), digits=nDigits), ", versus full-fit AIC = ", signif(AIC(fit_full), digits=nDigits), "\n\n")
@@ -122,6 +146,7 @@ print(dim(X))
 beta_true = 0.1 * matrix(c(3 * (1:nPred), 100), ncol=1) # True coefficients increase by three, and set Intercept to 100
 beta_true[2] = 0 # Set Beta_2 to zero for testing
 beta_true[3] = beta_true[4] # Set Beta_3 == Beta_4 for testing
+beta_true[1] = beta_true[3] # Set Beta_1 == Beta_4 for testing
 print(beta_true)
 e <- 1.5 * rnorm(N)
 y <- X %*% beta_true + e
@@ -163,9 +188,17 @@ H$Constraints = matrix(c(0, 0, -1, 1), nrow=1)
 H$constants = matrix(c(0), ncol=1)
 O <- teg_regr_tests(X, y, H, 1, names0)
 
-# Example of multi-constraints: set X1 == X2 and X3 to 5
+# Example of multi-constraints:
+# Set X1 == X2 and X3 to 5
 H <- c()
 H$Constraints = matrix(c(1, -1, 0, 0), nrow=1)
 H$Constraints = rbind(H$Constraints, matrix(c(0, 0, 1, 0), nrow=1))
 H$constants = matrix(c(0, 5), ncol=1)
+O <- teg_regr_tests(X, y, H, 1, names0)
+
+# Set X2 == X3 == X4
+H <- c()
+H$Constraints = matrix(c(-1, 0, 1, 0), nrow=1)
+H$Constraints = rbind(H$Constraints, matrix(c(0, 0, -1, 1), nrow=1))
+H$constants = matrix(c(0, 0), ncol=1)
 O <- teg_regr_tests(X, y, H, 1, names0)
