@@ -3,7 +3,7 @@ Function in R for tests of linear constraints on regression coefficients.
 
 The function (a practice project after reading Bingham & Fry, but a handy helper function potentially) tests linear hypotheses on regression coefficients beta_i of the form Constraints * betas = constants.
 
-The function requires predictor and outcome matrices X and y (an intercept column must be added to X explicitly if required), plus a Hypothesis: a list of a Constraints matrix and a constants vector that defines the constraints to test. Constraints can, e.g., test the effect of removing a predictor or equalizing two predictors etc. The function runs the F-test for the hypothesis (significance meaning the hypothesis is rejected). If the constraints are equivalent to testing a nested model or testing equality between a set of predictors, the AIC is provided for the full model and constrained model.
+The function requires predictor and outcome matrices X and y (an intercept column must be added to X explicitly if required), plus a Hypothesis: a list of a Constraints matrix and a constants vector that defines the constraints to test. Constraints can, e.g., test the effect of removing a predictor or equalizing two predictors etc. The function runs the F-test for the hypothesis (significance meaning the hypothesis is rejected) and provides the AIC's for the full model and constrained model.
 
 Data from a data.frame will need to be converted to matrices, e.g., via data.matrix().
 
@@ -19,10 +19,11 @@ H$constants = matrix(c(0, 0), ncol=1)
 
 O <- teg_regr_tests(X, y, H)
 
-tests against the hypothesis that predictors X1 and X4 have a weight of 0; or, equivalently, it tells you whether adding the set of predictors {X1 and X4} to the model without them results in a significant increase in explained variance. The function (unless told to suppress output) will provide the usual regression output from lm(), with the final two lines providing the AIC comparison (for nested models only) and F-test for the hypothesis:
+tests against the hypothesis that predictors X1 and X4 have a weight of 0; or, equivalently, it tells you whether adding the set of predictors {X1 and X4} to the model without them results in a significant increase in explained variance. The function (unless told to suppress output) will provide the usual regression output from lm() and the tests of the linear hypothesis:
 
-Reduced model AIC =  433 , versus full-fit AIC =  424 
+F-test of linear constraint: F(2, 395) = 0.639, p = 0.529  (p < .05 rejects constrained model.)
+Constrained model AIC =  -633 
+Full model AIC =  -630 
+Difference =  -2.71  (negative supports constrained model).
 
-F-test of linear constraint: F(2, 75) = 6.47, p = 0.00255
-
-So, in this case, the reduced model is worse than the full model in terms of AIC and the F-test agrees, as removing the predictors results in a significant increase in unexplained variance.
+So, in this case, the reduced model is better than the full model in terms of AIC and the F-test agrees, as removing the predictors does not result in a significant increase in unexplained variance.
