@@ -22,8 +22,11 @@ O <- teg_regr_tests(X, y, H)
 tests against the hypothesis that predictors X1 and X4 have a weight of 0; or, equivalently, it tells you whether adding the set of predictors {X1 and X4} to the model without them results in a significant increase in explained variance. The function (unless told to suppress output) will provide the usual regression output from lm() and the tests of the linear hypothesis:
 
 F-test of linear constraint: F(2, 395) = 0.639, p = 0.529  (p < .05 rejects constrained model.)
+
 Constrained model AIC =  -633 
+
 Full model AIC =  -630 
+
 Difference =  -2.71  (negative supports constrained model).
 
 So, in this case, the reduced model is better than the full model in terms of AIC and the F-test agrees, as removing the predictors does not result in a significant increase in unexplained variance.
