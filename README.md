@@ -30,3 +30,8 @@ Full model AIC =  -630
 Difference =  -2.71  (negative supports constrained model).
 
 So, in this case, the reduced model is better than the full model in terms of AIC and the F-test agrees, as removing the predictors does not result in a significant increase in unexplained variance.
+
+
+
+[![DOI](https://zenodo.org/badge/376601604.svg)](https://zenodo.org/badge/latestdoi/376601604)
+
