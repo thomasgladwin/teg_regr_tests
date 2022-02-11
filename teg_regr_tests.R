@@ -69,11 +69,7 @@ teg_regr_tests <- function(X, y, H, verbose0 = 1, names0 = c()) {
     print(H)
   }
   nDigits <- 3
-  
-  # Center variables
-  y <- y - mean(y, na.rm=TRUE)
-  X <- X - mean(X, na.rm=TRUE)
-  
+ 
   # Fit the full model
   fit_full <- lm(y ~ X - 1)
   Output$fit_full <- fit_full
