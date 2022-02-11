@@ -70,6 +70,10 @@ teg_regr_tests <- function(X, y, H, verbose0 = 1, names0 = c()) {
   }
   nDigits <- 3
   
+  # Center variables
+  y <- y - mean(y, na.rm=TRUE)
+  X <- X - mean(X, na.rm=TRUE)
+  
   # Fit the full model
   fit_full <- lm(y ~ X - 1)
   Output$fit_full <- fit_full
@@ -128,45 +132,47 @@ teg_regr_tests <- function(X, y, H, verbose0 = 1, names0 = c()) {
 # Example code
 
 # Create test data
-N <- 400
-nPred <- 4 # Intercept must be added to these as an explicit column in X
-names0 <- paste(rep('v', nPred), 1:nPred, sep="")
-names0 <- c(names0, 'Intercept')
-X <- matrix(rnorm(N * nPred), ncol = nPred)
-X <- cbind(X, rep(1,N)) # Add intercept explicitly
-print(dim(X))
-beta_true = 1 + 1 * matrix(c(3 * (1:nPred), 0), ncol=1) # True coefficients increase by three, and set Intercept to 100
-beta_true[2] = 0 # Set Beta_2 to zero for testing
-beta_true[3] = 0 # Set Beta_2 to zero for testing
-beta_true[1] = beta_true[4] # Set Beta_3 == Beta_4 for testing
-print(beta_true)
-e <- 0.1 * rnorm(N)
-y <- X %*% beta_true + e
+if (FALSE) {
+	N <- 400
+	nPred <- 4 # Intercept must be added to these as an explicit column in X
+	names0 <- paste(rep('v', nPred), 1:nPred, sep="")
+	names0 <- c(names0, 'Intercept')
+	X <- matrix(rnorm(N * nPred), ncol = nPred)
+	X <- cbind(X, rep(1,N)) # Add intercept explicitly
+	print(dim(X))
+	beta_true = 1 + 1 * matrix(c(3 * (1:nPred), 0), ncol=1) # True coefficients increase by three, and set Intercept to 100
+	beta_true[2] = 0 # Set Beta_2 to zero for testing
+	beta_true[3] = 0 # Set Beta_2 to zero for testing
+	beta_true[1] = beta_true[4] # Set Beta_3 == Beta_4 for testing
+	print(beta_true)
+	e <- 0.1 * rnorm(N)
+	y <- X %*% beta_true + e
 
-# Set to 0
-H <- c()
-H$Constraints = matrix(c(0, 1, 0, 0, 0), nrow=1)
-H$Constraints = rbind(H$Constraints, matrix(c(0, 0, 1, 0, 0), nrow=1))
-H$constants = matrix(c(0, 0), ncol=1)
-O <- teg_regr_tests(X, y, H, 1, names0)
+	# Set to 0
+	H <- c()
+	H$Constraints = matrix(c(0, 1, 0, 0, 0), nrow=1)
+	H$Constraints = rbind(H$Constraints, matrix(c(0, 0, 1, 0, 0), nrow=1))
+	H$constants = matrix(c(0, 0), ncol=1)
+	O <- teg_regr_tests(X, y, H, 1, names0)
 
-# To run basic regression, where H = c()
-O <- teg_regr_tests(X, y, c(), 1, names0)
+	# To run basic regression, where H = c()
+	O <- teg_regr_tests(X, y, c(), 1, names0)
 
-# Set X1 == X2 and X3 to 5
-H <- c()
-H$Constraints = matrix(c(1, -1, 0, 0, 0), nrow=1)
-H$Constraints = rbind(H$Constraints, matrix(c(0, 0, 1, 0, 0), nrow=1))
-H$constants = matrix(c(0, 5), ncol=1)
-O <- teg_regr_tests(X, y, H, 1, names0)
+	# Set X1 == X2 and X3 to 5
+	H <- c()
+	H$Constraints = matrix(c(1, -1, 0, 0, 0), nrow=1)
+	H$Constraints = rbind(H$Constraints, matrix(c(0, 0, 1, 0, 0), nrow=1))
+	H$constants = matrix(c(0, 5), ncol=1)
+	O <- teg_regr_tests(X, y, H, 1, names0)
 
-# Set X2 == X3 == X4
-H <- c()
-H$Constraints = matrix(c(-1, 0, 1, 0, 0), nrow=1)
-H$Constraints = rbind(H$Constraints, matrix(c(0, 0, -1, 1, 0), nrow=1))
-H$constants = matrix(c(0, 0), ncol=1)
-O <- teg_regr_tests(X, y, H, 1, names0)
+	# Set X2 == X3 == X4
+	H <- c()
+	H$Constraints = matrix(c(-1, 0, 1, 0, 0), nrow=1)
+	H$Constraints = rbind(H$Constraints, matrix(c(0, 0, -1, 1, 0), nrow=1))
+	H$constants = matrix(c(0, 0), ncol=1)
+	O <- teg_regr_tests(X, y, H, 1, names0)
 
-# Check consistency with R functions
-O <- teg_regr(X, y); print(O$logL); print(O$AIC)
-fit0 <- lm(y ~ X - 1); print(logLik(fit0)); print(AIC(fit0))
+	# Check consistency with R functions
+	O <- teg_regr(X, y); print(O$logL); print(O$AIC)
+	fit0 <- lm(y ~ X - 1); print(logLik(fit0)); print(AIC(fit0))
+}
