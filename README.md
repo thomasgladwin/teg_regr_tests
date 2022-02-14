@@ -5,6 +5,8 @@ The function (a practice project after reading Bingham & Fry, but a handy helper
 
 The function requires predictor and outcome matrices X and y (an intercept column must be added to X explicitly if required), plus a Hypothesis: a list of a Constraints matrix and a constants vector that defines the constraints to test. Constraints can, e.g., test the effect of removing a predictor or equalizing two predictors etc. The function runs the F-test for the hypothesis (significance meaning the hypothesis is rejected) and provides the AIC's for the full model and constrained model.
 
+To run a typical test aimed at the predictors, where the intercept isn't of interest, center the variables and run without an explicit intercept (otherwise you'd have to specify you're testing against the constraint that all parameters are 0 except the intercept).
+
 Data from a data.frame will need to be converted to matrices, e.g., via data.matrix().
 
 The script includes example code for various constraints. E.g.,
