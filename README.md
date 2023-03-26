@@ -40,9 +40,9 @@ The usage is illustrated, with simulated data, in test_teg_regression.py.
 
 By default, do not add an explicit intercept. The intercept will be appended as an additional predictor.
 
-The Constraints argument is a dictionary. The example below shows the Constraints setup to set two specific predictor-coefficients to 0.
+The Constraints argument is a dictionary. The example below shows the Constraints setup to set a specific predictor-coefficient to 0.
 
-pred_to_test = [1, 2]
+pred_to_test = 1
 
 Constraints = {}
 
@@ -51,6 +51,8 @@ Constraints['coefficients'] = np.array([0 for a in range(X.shape[1])]).reshape(1
 Constraints['coefficients'][0][pred_to_test] = 1
 
 Constraints['constants'] = np.array([0])
+
+O = teg_regression.run_regression(X, y, Constraints)
 
 
 [![DOI](https://zenodo.org/badge/376601604.svg)](https://zenodo.org/badge/latestdoi/376601604)
