@@ -38,15 +38,18 @@ So, in this case, the reduced model is better than the full model in terms of AI
 # For Python
 By default, do not add an explicit intercept. The intercept will be appended as an additional predictor.
 
-The Constraints argument is a dictionary. The example below shows the Constraints setup to set all predictor-coefficients to 0.
+The Constraints argument is a dictionary. The example below shows the Constraints setup to set two specific predictor-coefficients to 0.
+
+pred_to_test = [1, 2]
 
 Constraints = {}
 
-Constraints['coefficients'] = np.identity(X.shape[1])
+Constraints['coefficients'] = np.array([0 for a in range(X.shape[1])]).reshape(1, X.shape[1])
 
-Constraints['coefficients'] = Constraints['coefficients'][:-1,:]
+Constraints['coefficients'][0][pred_to_test] = 1
 
-Constraints['constants'] = np.array([0 for r in range(Constraints['coefficients'].shape[0])])
+Constraints['constants'] = np.array([0])
+
 
 [![DOI](https://zenodo.org/badge/376601604.svg)](https://zenodo.org/badge/latestdoi/376601604)
 
