@@ -35,5 +35,18 @@ Difference =  -2.71  (negative supports constrained model).
 
 So, in this case, the reduced model is better than the full model in terms of AIC and the F-test agrees, as removing the predictors does not result in a significant increase in unexplained variance.
 
+# For Python
+By default, do not add an explicit intercept. The intercept will be appended as an additional predictor.
+
+The Constraints argument is a dictionary. The example below shows the Constraints setup to set all predictor-coefficients to 0.
+
+Constraints = {}
+
+Constraints['coefficients'] = np.identity(X.shape[1])
+
+Constraints['coefficients'] = Constraints['coefficients'][:-1,:]
+
+Constraints['constants'] = np.array([0 for r in range(Constraints['coefficients'].shape[0])])
+
 [![DOI](https://zenodo.org/badge/376601604.svg)](https://zenodo.org/badge/latestdoi/376601604)
 
