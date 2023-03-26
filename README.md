@@ -1,9 +1,11 @@
 # teg_regr_tests
-Function in R for tests of linear constraints on regression coefficients.
+Function in R and Python for tests of linear constraints on regression coefficients.
 
 The function (a practice project after reading Bingham & Fry, but a handy helper function potentially) tests linear hypotheses on regression coefficients beta_i of the form Constraints * betas = constants.
 
 The function requires predictor and outcome matrices X and y (an intercept column must be added to X explicitly if required), plus a Hypothesis: a list of a Constraints matrix and a constants vector that defines the constraints to test. Constraints can, e.g., test the effect of removing a predictor or equalizing two predictors etc. The function runs the F-test for the hypothesis (significance meaning the hypothesis is rejected) and provides the AIC's for the full model and constrained model.
+
+# For R:
 
 To run a typical test aimed at the predictors, where the intercept isn't of interest, center the variables and run without an explicit intercept (otherwise you'd have to specify you're testing against the constraint that all parameters are 0 except the intercept).
 
@@ -32,8 +34,6 @@ Full model AIC =  -630
 Difference =  -2.71  (negative supports constrained model).
 
 So, in this case, the reduced model is better than the full model in terms of AIC and the F-test agrees, as removing the predictors does not result in a significant increase in unexplained variance.
-
-
 
 [![DOI](https://zenodo.org/badge/376601604.svg)](https://zenodo.org/badge/latestdoi/376601604)
 
