@@ -27,7 +27,7 @@ def F_test_and_AIC(X, y, coeffs, Constraints):
         # Set all predictor coefficients to 0
         Constraints = {}
         Constraints['coefficients'] = np.identity(X.shape[1])
-        Constraints['coefficients'] = Constraints['coefficients'][1:,:]
+        Constraints['coefficients'] = Constraints['coefficients'][:-1,:]
         Constraints['constants'] = np.array([0 for r in range(Constraints['coefficients'].shape[0])])
     CM = Constraints['coefficients']
     Cv = Constraints['constants']
@@ -81,19 +81,24 @@ def print_report(O):
         F = O['coeffs_F'][pred]
         df_model = O['coeffs_df_model'][pred]
         df_error = O['coeffs_df_error'][pred]
-        if pred == 0:
+        if pred == len(O['coeffs']) - 1:
             print("\tIntercept: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g}".format(O['coeffs'][pred], df_model, df_error, F, p))
         else:
             print("\tPredictor {:d}: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g}".format(pred - 1, O['coeffs'][pred], df_model, df_error, F, p))
 
-def teg_regression(X, y, Constraints={}, report=True):
-    # Do not add the intercept in the input.
+def teg_regression(X, y, Constraints={}, report=True, explicit_intercept=False):
+    # By default, do not add the intercept in the input.
     # Constraints['coefficients'] is a matrix of row-wise coefficients defining contrast scores.
     # Constraints['constants'] is a vector of constants for the contrasts.
     O = {}
     # Add intercept to X
-    intercept_v = np.array([1 for x in range(X.shape[0])]).reshape(X.shape[0], 1)
-    X = np.hstack([intercept_v, X])
+    if not explicit_intercept:
+        intercept_v = np.array([1 for x in range(X.shape[0])]).reshape(X.shape[0], 1)
+        X = np.hstack([X, intercept_v])
+        if not len(Constraints) == 0:
+            CM = Constraints['coefficients']
+            constraint_column = np.array([0 for x in range(CM.shape[0])]).reshape(CM.shape[0], 1)
+            Constraints['coefficients'] = np.hstack([Constraints['coefficients'], constraint_column])
     # Get coefficients
     coeffs = get_coeffs(X, y)
     O['coeffs'] = coeffs
@@ -106,6 +111,7 @@ def teg_regression(X, y, Constraints={}, report=True):
 
 nObs = 300
 nPred = 5
-fix_coeffs = {0:1, 3:2} # Set to empty dict to simulate the null model.
+fix_coeffs = {0:1, 3:2}
+fix_coeffs = {}  # Set to empty dict to simulate the null model.
 X, y = sim_data(nObs, nPred, fix_coeffs=fix_coeffs, fix_intercept = 20)
 O = teg_regression(X, y)
