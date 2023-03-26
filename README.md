@@ -36,6 +36,8 @@ Difference =  -2.71  (negative supports constrained model).
 So, in this case, the reduced model is better than the full model in terms of AIC and the F-test agrees, as removing the predictors does not result in a significant increase in unexplained variance.
 
 # For Python
+Can be installed via pip.
+
 The usage is illustrated, with simulated data, in test_teg_regression.py.
 
 By default, do not add an explicit intercept to the predictors. The intercept will be appended as an additional predictor, unless the argument explicit_intercept is given and set to True.
