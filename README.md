@@ -40,7 +40,7 @@ Can be installed via pip.
 
 The usage is illustrated, with simulated data, in test_teg_regression.py.
 
-By default, do not add an explicit intercept to the predictors. The intercept will be appended as an additional predictor, unless the argument explicit_intercept is given and set to True.
+By default, do not add an explicit intercept to the predictors. The intercept will be appended as an additional predictor, unless the argument explicit_intercept is given and set to True (for if you want to define constraints involving the intercept).
 
 The Constraints argument is a dictionary. The example below shows the Constraints setup to set two specific predictor-coefficients to 0.
 
