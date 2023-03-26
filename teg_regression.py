@@ -84,7 +84,7 @@ def print_report(O):
         if pred == len(O['coeffs']) - 1:
             print("\tIntercept: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g}".format(O['coeffs'][pred], df_model, df_error, F, p))
         else:
-            print("\tPredictor {:d}: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g}".format(pred - 1, O['coeffs'][pred], df_model, df_error, F, p))
+            print("\tPredictor {:d}: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g}".format(pred, O['coeffs'][pred], df_model, df_error, F, p))
 
 def teg_regression(X, y, Constraints={}, report=True, explicit_intercept=False):
     # By default, do not add the intercept in the input.
@@ -115,3 +115,11 @@ fix_coeffs = {0:1, 3:2}
 fix_coeffs = {}  # Set to empty dict to simulate the null model.
 X, y = sim_data(nObs, nPred, fix_coeffs=fix_coeffs, fix_intercept = 20)
 O = teg_regression(X, y)
+
+# Constraints example: Set a given predictor to 0
+pred_to_test = [1, 2]
+Constraints = {}
+Constraints['coefficients'] = np.array([0 for a in range(X.shape[1])]).reshape(1, X.shape[1])
+Constraints['coefficients'][0][pred_to_test] = 1
+Constraints['constants'] = np.array([0])
+O = teg_regression(X, y, Constraints)
