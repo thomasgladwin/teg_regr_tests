@@ -65,7 +65,7 @@ def run_tests(X, y, coeffs, Constraints, O):
         Temp_Constraints['coefficients'] = np.array([0 for a in range(len(coeffs))]).reshape(1,len(coeffs))
         Temp_Constraints['coefficients'][0][pred] = 1
         Temp_Constraints['constants'] = np.array([0])
-        p, F, df_model, df_error = F_test(X, y, coeffs, Temp_Constraints)
+        p, F, df_model, df_error, AIC_free, AIC_constrained = F_test_and_AIC(X, y, coeffs, Temp_Constraints)
         O['coeffs_p'].append(p)
         O['coeffs_F'].append(F)
         O['coeffs_df_model'].append(df_model)
@@ -86,7 +86,7 @@ def print_report(O):
         else:
             print("\tPredictor {:d}: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g}".format(pred, O['coeffs'][pred], df_model, df_error, F, p))
 
-def teg_regression(X, y, Constraints={}, report=True, explicit_intercept=False):
+def run_regression(X, y, Constraints={}, report=True, explicit_intercept=False):
     # By default, do not add the intercept in the input.
     # Constraints['coefficients'] is a matrix of row-wise coefficients defining contrast scores.
     # Constraints['constants'] is a vector of constants for the contrasts.
@@ -108,18 +108,3 @@ def teg_regression(X, y, Constraints={}, report=True, explicit_intercept=False):
     if report:
         print_report(O)
     return O
-
-nObs = 300
-nPred = 5
-fix_coeffs = {0:1, 3:2}
-fix_coeffs = {}  # Set to empty dict to simulate the null model.
-X, y = sim_data(nObs, nPred, fix_coeffs=fix_coeffs, fix_intercept = 20)
-O = teg_regression(X, y)
-
-# Constraints example: Set a given predictor to 0
-pred_to_test = [1, 2]
-Constraints = {}
-Constraints['coefficients'] = np.array([0 for a in range(X.shape[1])]).reshape(1, X.shape[1])
-Constraints['coefficients'][0][pred_to_test] = 1
-Constraints['constants'] = np.array([0])
-O = teg_regression(X, y, Constraints)
