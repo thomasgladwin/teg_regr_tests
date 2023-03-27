@@ -4,17 +4,17 @@ Function in R and Python for tests of linear constraints on regression coefficie
 The function (a practice project after reading Bingham & Fry, but a handy helper function potentially) tests linear hypotheses on regression coefficients beta_i of the form Constraints * betas = constants.
 
 E.g., assuming we have four predictors,
-
+```
 [1 0 0 0]           [0]
 
 [0 1 0 0] * betas = [0]
 
 [0 0 1 0]           [0]
-
+```
 Would constrain the first three predictors to be zero.
-
+```
 [1 -1 0 0] * betas = 0
-
+```
 Would constrain the first and second predictor to be equal.
 
 # For R:
