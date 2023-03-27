@@ -6,7 +6,9 @@ The function (a practice project after reading Bingham & Fry, but a handy helper
 E.g., assuming we have four predictors,
 
 [1 0 0 0]           [0]
+
 [0 1 0 0] * betas = [0]
+
 [0 0 1 0]           [0]
 
 Would constrain the first three predictors to be zero.
