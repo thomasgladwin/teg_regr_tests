@@ -1,5 +1,27 @@
 import numpy as np
-import scipy
+import math
+
+def teg_nchoosek(x, y):
+    return math.gamma(x + 1) / (math.gamma(y + 1) * math.gamma(x - y + 1))
+
+def teg_incomplete_beta_comb_series(x, a, b):
+    N = 100
+    Ix = (1-x)**b * np.sum(np.array([teg_nchoosek(b + (a+j) - 1, (a+j)) * x**(a+j) for j in range(0, N)]))
+    return Ix
+
+def teg_incomplete_beta(x, a, b):
+    Ix = teg_incomplete_beta_comb_series(x, a, b)
+    return Ix
+
+def teg_cdf_f(F, df_model, df_error):
+    x = df_model * F / (df_model * F + df_error)
+    Ix = teg_incomplete_beta(x, df_model/2, df_error/2)
+    p = 1 - Ix
+    return p
+
+def get_F_p(F, df_model, df_error):
+    p = 1 - teg_cdf_f(F, df_model, df_error)
+    return p
 
 def sim_data(nObs, nPred, fix_coeffs={}, fix_intercept=0):
     # Example: coeffs = {0: 1, 3: 2}
@@ -40,7 +62,7 @@ def F_test_and_AIC(X, y, coeffs, Constraints):
     df_model = nConstr
     df_error = len(y) - len(coeffs)
     F = (SSH/df_model) / (SSE/df_error)
-    p = 1 - scipy.stats.f.cdf(F, df_model, df_error)
+    p = get_F_p(F, df_model, df_error)
     # AIC
     AIC_free = get_AIC(SSE, len(coeffs), len(y))
     AIC_constrained = get_AIC(SSH, len(coeffs) - nConstr, len(y))
