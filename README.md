@@ -72,5 +72,7 @@ Constraints['constants'] = np.array([0, 0])
 
 O = teg_regression.run_regression(X, y, Constraints)
 
+The module also provides a function that gives the p-value for an F-tests: get_F_p(F, df_model, df_error).
+
 [![DOI](https://zenodo.org/badge/376601604.svg)](https://zenodo.org/badge/latestdoi/376601604)
 
