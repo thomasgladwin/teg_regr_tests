@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from scipy import stats
 
 def teg_nchoosek(x, y):
     try:
@@ -16,7 +17,6 @@ def teg_incomplete_beta_comb_series(x, a, b):
 def teg_incomplete_beta(x, a, b):
     Ix = teg_incomplete_beta_comb_series(x, a, b)
     Iy = teg_incomplete_beta_comb_series(1-x, b, a)
-    print(Ix, Iy)
     if Iy < Ix:
         Ix = 1 - Iy
     return Ix
@@ -27,7 +27,8 @@ def teg_cdf_f(F, df_model, df_error):
     return Ix
 
 def get_F_p(F, df_model, df_error):
-    p = 1 - teg_cdf_f(F, df_model, df_error)
+    # p = 1 - teg_cdf_f(F, df_model, df_error)
+    p = 1 - stats.f.cdf(F, df_model, df_error)
     return p
 
 def sim_data(nObs, nPred, fix_coeffs={}, fix_intercept=0):
