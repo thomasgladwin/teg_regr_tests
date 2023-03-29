@@ -16,19 +16,19 @@ def teg_incomplete_beta_comb_series(x, a, b):
 
 def teg_incomplete_beta(x, a, b):
     Ix = teg_incomplete_beta_comb_series(x, a, b)
-    Iy = teg_incomplete_beta_comb_series(1-x, b, a)
-    if Iy < Ix:
-        Ix = 1 - Iy
     return Ix
 
 def teg_cdf_f(F, df_model, df_error):
     x = df_model * F / (df_model * F + df_error)
-    Ix = teg_incomplete_beta(x, df_model/2, df_error/2)
+    if F < 1:
+        Ix = teg_incomplete_beta(x, df_model/2, df_error/2)
+    else:
+        Ix = 1 - teg_incomplete_beta(1 - x, df_error / 2, df_model / 2)
     return Ix
 
 def get_F_p(F, df_model, df_error):
-    # p = 1 - teg_cdf_f(F, df_model, df_error)
-    p = 1 - stats.f.cdf(F, df_model, df_error)
+    p = 1 - teg_cdf_f(F, df_model, df_error)
+    # p = 1 - stats.f.cdf(F, df_model, df_error)
     return p
 
 def sim_data(nObs, nPred, fix_coeffs={}, fix_intercept=0):
