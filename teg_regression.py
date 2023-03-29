@@ -20,8 +20,7 @@ def teg_incomplete_beta(x, a, b):
 def teg_cdf_f(F, df_model, df_error):
     x = df_model * F / (df_model * F + df_error)
     Ix = teg_incomplete_beta(x, df_model/2, df_error/2)
-    p = 1 - Ix
-    return p
+    return Ix
 
 def get_F_p(F, df_model, df_error):
     p = 1 - teg_cdf_f(F, df_model, df_error)
