@@ -1,6 +1,5 @@
 import numpy as np
 import math
-from scipy import stats
 
 def teg_nchoosek(x, y):
     try:
@@ -15,15 +14,15 @@ def teg_incomplete_beta_comb_series(x, a, b):
     return Ix
 
 def teg_incomplete_beta(x, a, b):
-    Ix = teg_incomplete_beta_comb_series(x, a, b)
+    if x > a/(a + b):
+        Ix = 1 - teg_incomplete_beta_comb_series(1-x, b, a)
+    else:
+        Ix = teg_incomplete_beta_comb_series(x, a, b)
     return Ix
 
 def teg_cdf_f(F, df_model, df_error):
     x = df_model * F / (df_model * F + df_error)
-    if F < 1:
-        Ix = teg_incomplete_beta(x, df_model/2, df_error/2)
-    else:
-        Ix = 1 - teg_incomplete_beta(1 - x, df_error / 2, df_model / 2)
+    Ix = teg_incomplete_beta(x, df_model / 2, df_error / 2)
     return Ix
 
 def get_F_p(F, df_model, df_error):
