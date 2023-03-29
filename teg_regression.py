@@ -15,6 +15,10 @@ def teg_incomplete_beta_comb_series(x, a, b):
 
 def teg_incomplete_beta(x, a, b):
     Ix = teg_incomplete_beta_comb_series(x, a, b)
+    Iy = teg_incomplete_beta_comb_series(1-x, b, a)
+    print(Ix, Iy)
+    if Iy < Ix:
+        Ix = 1 - Iy
     return Ix
 
 def teg_cdf_f(F, df_model, df_error):
