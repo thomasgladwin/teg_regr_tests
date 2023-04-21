@@ -11,11 +11,11 @@ E.g., assuming we have four predictors,
 
 [0 0 1 0]           [0]
 ```
-Would constrain the first three predictors to be zero.
+would constrain the first three predictors to be zero. And
 ```
 [1 -1 0 0] * betas = 0
 ```
-Would constrain the first and second predictor to be equal.
+would constrain the first and second predictor to be equal.
 
 # For R:
 
