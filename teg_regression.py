@@ -101,8 +101,12 @@ def run_tests(X, y, coeffs, Constraints, O):
         O['coeffs_df_error'].append(df_error)
     return O
 
-def print_report(O):
-    print("Test of the model:\n\tF({:.3g},{:.3g}) = {:.3g}, p = {:.3g}".format(O['df_model'], O['df_error'], O['F'], O['p']))
+def print_report(O, coeff_labels):
+    if O['p'] < .05:
+        sigstr = '***'
+    else:
+       sigstr = ''
+    print("Test of the model:\n\tF({:.3g},{:.3g}) = {:.3g}, p = {:.3g} {}".format(O['df_model'], O['df_error'], O['F'], O['p'], sigstr))
     print("\tAIC constrained - free = {:.3g} (negative supports constraints).".format(O['AIC_constrained'] - O['AIC_free']))
     print("Tests per coefficient.")
     for pred in range(len(O['coeffs'])):
@@ -110,12 +114,16 @@ def print_report(O):
         F = O['coeffs_F'][pred]
         df_model = O['coeffs_df_model'][pred]
         df_error = O['coeffs_df_error'][pred]
-        if pred == len(O['coeffs']) - 1:
-            print("\tIntercept: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g}".format(O['coeffs'][pred], df_model, df_error, F, p))
+        if p < .05:
+            sigstr = '***'
         else:
-            print("\tPredictor {:d}: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g}".format(pred, O['coeffs'][pred], df_model, df_error, F, p))
+            sigstr = ''
+        if pred == len(O['coeffs']) - 1:
+            print("\tIntercept: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g} {}".format(O['coeffs'][pred], df_model, df_error, F, p, sigstr))
+        else:
+            print("\tPredictor {:d} {}: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g} {}".format(pred, coeff_labels[pred], O['coeffs'][pred], df_model, df_error, F, p, sigstr))
 
-def run_regression(X, y, Constraints={}, report=True, explicit_intercept=False):
+def run_regression(X, y, ConstraintsIn={}, report=True, explicit_intercept=False, coeff_labels=[]):
     # By default, do not add the intercept in the input.
     # Constraints['coefficients'] is a matrix of row-wise coefficients defining contrast scores.
     # Constraints['constants'] is a vector of constants for the contrasts.
@@ -124,10 +132,12 @@ def run_regression(X, y, Constraints={}, report=True, explicit_intercept=False):
     if not explicit_intercept:
         intercept_v = np.array([1 for x in range(X.shape[0])]).reshape(X.shape[0], 1)
         X = np.hstack([X, intercept_v])
+        Constraints = ConstraintsIn.copy()
         if not len(Constraints) == 0:
-            CM = Constraints['coefficients']
+            CM = Constraints['coefficients'].copy()
             constraint_column = np.array([0 for x in range(CM.shape[0])]).reshape(CM.shape[0], 1)
-            Constraints['coefficients'] = np.hstack([Constraints['coefficients'], constraint_column])
+            CM = np.hstack([CM, constraint_column])
+            Constraints['coefficients'] = CM
     # Get coefficients
     coeffs = get_coeffs(X, y)
     O['coeffs'] = coeffs
@@ -135,5 +145,5 @@ def run_regression(X, y, Constraints={}, report=True, explicit_intercept=False):
     O = run_tests(X, y, coeffs, Constraints, O)
     # Print out report
     if report:
-        print_report(O)
+        print_report(O, coeff_labels)
     return O
