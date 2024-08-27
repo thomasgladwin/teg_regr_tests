@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import scipy as sp
 
 def teg_nchoosek(x, y):
     try:
@@ -8,10 +9,13 @@ def teg_nchoosek(x, y):
         return 0
 
 def teg_incomplete_beta_comb_series(x, a, b):
-    # From https://dlmf.nist.gov/8.17
-    N = 200
-    Ix = (1-x)**b * np.sum(np.array([teg_nchoosek(b + (a+j) - 1, (a+j)) * x**(a+j) for j in range(0, N)]))
-    return Ix
+    # From https://dlmf.nist.gov/8.17 - note, doesn't work for larger samples.
+    #N = 200
+    #Ix = np.pow(1-x, b) * np.sum(np.array([teg_nchoosek(b + (a+j) - 1, (a+j)) * x**(a+j) for j in range(0, N)]))
+    #return Ix
+    Ix_sp = sp.special.betainc(a, b, x)
+    #print(Ix, Ix_sp)
+    return Ix_sp
 
 def teg_incomplete_beta(x, a, b):
     if x > a/(a + b):
@@ -26,8 +30,8 @@ def teg_cdf_f(F, df_model, df_error):
     return Ix
 
 def get_F_p(F, df_model, df_error):
-    p = 1 - teg_cdf_f(F, df_model, df_error)
-    # p = 1 - stats.f.cdf(F, df_model, df_error)
+    # p = 1 - teg_cdf_f(F, df_model, df_error)
+    p = 1 - sp.stats.f.cdf(F, df_model, df_error)
     return p
 
 def sim_data(nObs, nPred, fix_coeffs={}, fix_intercept=0):
@@ -105,7 +109,7 @@ def print_report(O, coeff_labels):
     if O['p'] < .05:
         sigstr = '***'
     else:
-       sigstr = ''
+        sigstr = ''
     print("Test of the model:\n\tF({:.3g},{:.3g}) = {:.3g}, p = {:.3g} {}".format(O['df_model'], O['df_error'], O['F'], O['p'], sigstr))
     print("\tAIC constrained - free = {:.3g} (negative supports constraints).".format(O['AIC_constrained'] - O['AIC_free']))
     print("Tests per coefficient.")
@@ -119,11 +123,11 @@ def print_report(O, coeff_labels):
         else:
             sigstr = ''
         if pred == len(O['coeffs']) - 1:
-            print("\tIntercept: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g} {}".format(O['coeffs'][pred], df_model, df_error, F, p, sigstr))
+           print("\tIntercept: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g} {}".format(O['coeffs'][pred], df_model, df_error, F, p, sigstr))
         else:
             print("\tPredictor {:d} {}: b = {:.3g}, F({:.3g},{:.3g}) = {:.3g}, p = {:.3g} {}".format(pred, coeff_labels[pred], O['coeffs'][pred], df_model, df_error, F, p, sigstr))
 
-def run_regression(X, y, ConstraintsIn={}, report=True, explicit_intercept=False, coeff_labels=[]):
+def run_regression(X, y, ConstraintsIn={}, report=True, explicit_intercept=False, coeff_labels=[], only_print_at_sig=1):
     # By default, do not add the intercept in the input.
     # Constraints['coefficients'] is a matrix of row-wise coefficients defining contrast scores.
     # Constraints['constants'] is a vector of constants for the contrasts.
@@ -145,5 +149,8 @@ def run_regression(X, y, ConstraintsIn={}, report=True, explicit_intercept=False
     O = run_tests(X, y, coeffs, Constraints, O)
     # Print out report
     if report:
-        print_report(O, coeff_labels)
+        if O['p'] <= only_print_at_sig:
+            print_report(O, coeff_labels)
+        else:
+            print('Model non-significant at reporting criterion ' + str(only_print_at_sig))
     return O
